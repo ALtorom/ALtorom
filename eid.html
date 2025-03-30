@@ -1,63 +1,476 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تهنئة عيد الفطر</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>عبدالرحمن الطروم يهنئكم بالعيد</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <style>
-        body {
-            background: url('https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif') no-repeat center center fixed;
-            background-size: cover;
-            text-align: center;
-            color: white;
+        :root {
+            --navbar-height: 60px;
+            --footer-height: 70px;
+            --whatsapp-color: #25D366;
+        }
+        
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
+            align-items: center;
+            text-align: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            touch-action: manipulation;
         }
-        .overlay {
-            position: absolute;
+        .video-background {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            z-index: -1;
+        }
+        .video-background iframe {
+            width: 100vw;
+            height: 100vh;
+            position: absolute;
+            top: -60px;
+            left: 0;
+        }
+        .video-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--footer-height);
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            color: white;
+            font-size: 0.9rem;
+            backdrop-filter: blur(3px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .footer-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.3s;
+            padding: 0 10px;
+        }
+        .footer-link:hover {
+            color: var(--whatsapp-color);
+            transform: translateY(-3px);
+        }
+        .footer-link i {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
         }
         .content {
-            position: relative;
+            position: absolute;
             z-index: 2;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 1.2rem;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.7);
+            width: 85%;
+            max-width: 350px;
+            height: auto;
+            min-height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: dvdMove 25s linear infinite, glow 1s infinite alternate;
+            transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
-        .btn-custom {
-            font-size: 1.5rem;
-            padding: 10px 20px;
-            margin-top: 20px;
-            background-color: gold;
-            color: black;
-            border-radius: 10px;
+        .content.paused {
+            animation-play-state: paused;
+        }
+        .content.hidden {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 3;
+            height: var(--navbar-height);
+            background-color: rgba(0, 0, 0, 0.85) !important;
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+        .navbar-brand {
+            margin-right: auto;
+            margin-left: 15px;
+        }
+        .navbar-buttons {
+            margin-left: auto;
+            margin-right: 15px;
+        }
+        .message-text {
+            margin-bottom: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .social-icons a {
+            color: #333;
+            font-size: 1.4rem;
+            transition: transform 0.3s, color 0.3s;
+        }
+        .social-icons a:hover {
+            transform: scale(1.2);
+        }
+        .whatsapp-btn {
+            position: relative;
+            transition: all 0.3s;
+        }
+        .whatsapp-btn:hover {
+            color: var(--whatsapp-color) !important;
+        }
+        .whatsapp-btn::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--whatsapp-color);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .whatsapp-btn.highlight::after {
+            opacity: 1;
+        }
+        .toggle-animation {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 25px;
+            height: 25px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 3;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .toggle-animation:hover {
+            opacity: 1;
+        }
+        .toggle-animation i {
+            font-size: 0.8rem;
+            color: #333;
+        }
+        .hide-container-btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background-color: rgba(255, 255, 255, 0.8);
             border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 3;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        .hide-container-btn:hover {
+            opacity: 1;
+        }
+        .hide-container-btn i {
+            font-size: 0.8rem;
+            color: #333;
+        }
+        
+        /* DVD bouncing animation معدلة مع توقف مؤقت */
+        @keyframes dvdMove {
+            0%, 15% {
+                top: calc(var(--navbar-height) + 10px);
+                left: 5%;
+                animation-timing-function: ease-out;
+            }
+            20% {
+                top: calc(var(--navbar-height) + 10px);
+                left: calc(95% - 350px);
+            }
+            35%, 50% {
+                top: calc(100% - var(--footer-height) - 200px);
+                left: calc(95% - 350px);
+                animation-timing-function: ease-out;
+            }
+            55% {
+                top: calc(100% - var(--footer-height) - 200px);
+                left: 5%;
+            }
+            70%, 85% {
+                top: calc(var(--navbar-height) + 10px);
+                left: 5%;
+                animation-timing-function: ease-out;
+            }
+            100% {
+                top: calc(var(--navbar-height) + 10px);
+                left: calc(95% - 350px);
+            }
+        }
+
+        /* تأثير التوهج الأخضر */
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(37, 211, 102, 0.5);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(37, 211, 102, 0.8);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .content {
+                width: 90%;
+                padding: 1rem;
+            }
+            .message-text {
+                font-size: 0.85rem;
+                margin-bottom: 8px;
+            }
+            .social-icons a {
+                font-size: 1.2rem;
+            }
+            .video-footer {
+                font-size: 0.8rem;
+            }
+            .footer-link {
+                padding: 0 5px;
+                font-size: 0.7rem;
+            }
+            .footer-link i {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="overlay"></div>
-    <div class="content">
-        <h1 class="display-3">عبدالرحمن الطروم يهنئكم بعيد الفطر المبارك!</h1>
-        <p class="lead">تقبل الله منا ومنكم صالح الأعمال، وكل عام وأنتم بخير</p>
-        <button class="btn btn-custom" onclick="window.location.href='index.html'">العودة إلى الصفحة الرئيسية</button>
-
-        <iframe width="0" height="0" src="https://music.youtube.com/watch?v=5du1izuglew&si=k-794p-mFTe6Ho8r?autoplay=1&loop=1" frameborder="0" allow="autoplay"></iframe>
+    <nav class="navbar navbar-dark">
+        <span class="navbar-brand">عبدالرحمن الطروم يهنئكم</span>
+        <div class="navbar-buttons">
+            <a class="btn btn-outline-light me-2" href="https://altorom.github.io/ALtorom/about.html">
+                <i class="bi bi-person-fill me-1"></i> عني
+            </a>
+            <a class="btn btn-outline-light whatsapp-btn" href="https://wa.me/?text=تهنئة%20بمناسبة%20العيد%20من%20عبدالرحمن%20الطروم%20🎉%20زيارة%20موقعي:%20https://altorom.github.io/ALtorom/index.html" target="_blank" data-action="share/whatsapp/share">
+                <i class="bi bi-whatsapp me-1"></i> مشاركة
+            </a>
+        </div>
+    </nav>
     
-
-        
+    <div class="video-background">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/YFwgejgq4m4?autoplay=1&mute=0&loop=1&playlist=YFwgejgq4m4&controls=0&showinfo=0&modestbranding=1&rel=0" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
     </div>
+    
+    <div class="video-footer">
+        <a href="https://altorom.github.io/ALtorom/index.html" class="footer-link">
+            <i class="bi bi-house-door"></i>
+            الرئيسية
+        </a>
+        <a href="https://altorom.github.io/ALtorom/about.html" class="footer-link">
+            <i class="bi bi-person"></i>
+            عني
+        </a>
+        <a href="https://wa.me/201019337489?text=مرحباً%20عبدالرحمن%20الطروم،%0A%0Aكل%20عام%20وأنت%20بخير%20بمناسبة%20عيد%20الفطر%20المبارك%20🎉%0A%0Aلقد%20زرت%20موقعك%20الخاص%20بتهنئة%20العيد%20وأعجبني%20كثيراً%20بكل%20ما%20فيه%20من%20إبداع%20وتفانٍ.%20أسأل%20الله%20أن%20يبارك%20فيك%20وفي%20عملك%20وأن%20يجعله%20في%20ميزان%20حسناتك.%0A%0Aتقبل%20الله%20منا%20ومنك%20صالح%20الأعمال%20وجعلنا%20وإياك%20من%20العائدين%20الفائزين.%0A%0Aمع%20أطيب%20التمنيات%20بأيام%20مليئة%20بالفرح%20والبركة." class="footer-link">
+            <i class="bi bi-gift"></i>
+            تهنئة
+        </a>
+        <button class="footer-link show-container-btn">
+            <i class="bi bi-eye-fill"></i>
+            إظهار
+        </button>
+    </div>
+    
+    <div class="content">
+        <div class="toggle-animation" title="إيقاف/تشغيل الحركة">
+            <i class="bi bi-pause-fill"></i>
+        </div>
+        <button class="hide-container-btn" title="إخفاء لمدة دقيقة">
+            <i class="bi bi-eye-slash"></i>
+        </button>
+        <h4 class="mb-3">عبدالرحمن الطروم يهنئكم 🎉</h4>
+        <p class="message-text">كل عام وأنتم بخير بمناسبة عيد الفطر المبارك</p>
+        <p class="message-text">تقبل الله منا ومنكم صالح الأعمال</p>
+        <p class="message-text">أهنئكم من القلب وأسأل الله أن يعيده علينا وعليكم باليمن والبركات</p>
+        
+        <div class="social-icons">
+            <a href="https://wa.me/?text=تهنئة%20بمناسبة%20العيد%20من%20عبدالرحمن%20الطروم%20🎉%20زيارة%20موقعي:%20https://altorom.github.io/ALtorom/index.html" class="whatsapp-btn" target="_blank" data-action="share/whatsapp/share"><i class="bi bi-whatsapp"></i></a>
+            <a href="https://altorom.github.io/ALtorom/index.html" target="_blank"><i class="bi bi-globe"></i></a>
+            <a href="https://altorom.github.io/ALtorom/about.html" target="_blank"><i class="bi bi-person-circle"></i></a>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            let audio = document.getElementById('eidTakbeer');
-            audio.volume = 0.7;
-            audio.play().catch(error => console.log("تشغيل الصوت تلقائيًا قد يكون محظورًا، اضغط على الشاشة لتشغيله."));
+        // عناصر DOM
+        const content = document.querySelector('.content');
+        const toggleBtn = document.querySelector('.toggle-animation');
+        const toggleIcon = toggleBtn.querySelector('i');
+        const hideContainerBtn = document.querySelector('.hide-container-btn');
+        const showContainerBtn = document.querySelector('.show-container-btn');
+        const whatsappBtn = document.querySelector('.whatsapp-btn');
+        let isPaused = false;
+        let isStopped = false;
+        let isHidden = false;
+        let pauseTimeout;
+        let hideTimeout;
+        
+        // التحكم في الحركة
+        function toggleAnimation() {
+            if (isStopped || isHidden) return;
+            
+            if (isPaused) {
+                content.classList.remove('paused');
+                toggleIcon.classList.replace('bi-play-fill', 'bi-pause-fill');
+                isPaused = false;
+                
+                // التوقف المؤقت التلقائي بعد 8 ثواني
+                pauseTimeout = setTimeout(() => {
+                    content.classList.add('paused');
+                    toggleIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+                    isPaused = true;
+                    
+                    // الاستئناف بعد 3 ثواني
+                    setTimeout(toggleAnimation, 3000);
+                }, 8000);
+            } else {
+                clearTimeout(pauseTimeout);
+                content.classList.add('paused');
+                toggleIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+                isPaused = true;
+            }
+        }
+        
+        function stopAnimation() {
+            clearTimeout(pauseTimeout);
+            content.classList.add('paused');
+            content.style.animation = 'none';
+            toggleIcon.classList.replace('bi-pause-fill', 'bi-eye-slash-fill');
+            isStopped = true;
+            isPaused = true;
+        }
+        
+        function hideContainer() {
+            content.classList.add('hidden');
+            isHidden = true;
+            clearTimeout(pauseTimeout);
+            
+            // إعادة الظهور بعد دقيقة
+            hideTimeout = setTimeout(() => {
+                showContainer();
+            }, 60000);
+        }
+        
+        function showContainer() {
+            clearTimeout(hideTimeout);
+            content.classList.remove('hidden');
+            isHidden = false;
+            toggleAnimation();
+        }
+        
+        // أحداث
+        content.addEventListener('mouseenter', () => {
+            clearTimeout(pauseTimeout);
+            content.classList.add('paused');
+            toggleIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+            isPaused = true;
+        });
+        
+        content.addEventListener('mouseleave', () => {
+            if (!isStopped && !isHidden) {
+                toggleAnimation();
+            }
+        });
+        
+        toggleBtn.addEventListener('click', () => {
+            if (isStopped) {
+                content.style.animation = 'dvdMove 25s linear infinite, glow 1s infinite alternate';
+                toggleIcon.classList.replace('bi-eye-slash-fill', 'bi-pause-fill');
+                isStopped = false;
+                isPaused = false;
+                toggleAnimation();
+            } else {
+                toggleAnimation();
+            }
+        });
+        
+        hideContainerBtn.addEventListener('click', hideContainer);
+        showContainerBtn.addEventListener('click', showContainer);
+        
+        // إضاءة زر الواتساب عند الاقتراب
+        function checkWhatsappHighlight() {
+            const contentRect = content.getBoundingClientRect();
+            const whatsappRect = whatsappBtn.getBoundingClientRect();
+            
+            const contentCenter = {
+                x: contentRect.left + contentRect.width / 2,
+                y: contentRect.top + contentRect.height / 2
+            };
+            
+            const whatsappCenter = {
+                x: whatsappRect.left + whatsappRect.width / 2,
+                y: whatsappRect.top + whatsappRect.height / 2
+            };
+            
+            const distance = Math.sqrt(
+                Math.pow(contentCenter.x - whatsappCenter.x, 2) + 
+                Math.pow(contentCenter.y - whatsappCenter.y, 2)
+            );
+            
+            if (distance < 150) {
+                whatsappBtn.classList.add('highlight');
+            } else {
+                whatsappBtn.classList.remove('highlight');
+            }
+            
+            requestAnimationFrame(checkWhatsappHighlight);
+        }
+        
+        // تشغيل عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            // بدء الحركة مع التوقف المؤقت التلقائي
+            setTimeout(toggleAnimation, 2000);
+            
+            // بدء تتبع زر الواتساب
+            checkWhatsappHighlight();
+            
+            // تعديل للهواتف
+            if ('ontouchstart' in window) {
+                content.style.animationPlayState = 'paused';
+                toggleIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+                isPaused = true;
+            }
         });
     </script>
 </body>
